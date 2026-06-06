@@ -59,13 +59,18 @@ class ItemEditViewModel(
     }
 
     fun updateUiState(itemDetails: ItemDetails) {
+        val updatedDetails = itemDetails.copy(id = itemId)
         itemUiState =
-            ItemUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
+            ItemUiState(itemDetails = updatedDetails, isEntryValid = validateInput(updatedDetails))
     }
 
-    suspend fun updateItem() {
-        if (validateInput(itemUiState.itemDetails)) {
-            itemsRepository.updateItem(itemUiState.itemDetails.toItem())
-        }
+     fun updateItem() {
+         viewModelScope.launch {
+             if (validateInput(itemUiState.itemDetails)) {
+                 itemsRepository.updateItem(itemUiState.itemDetails.toItem())
+             }
+
+         }
+
     }
 }
